@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="evaluation_system" name="tz_yfactor_hotcold" type="tz_yfactor_hotcold.py" required="true" output="screen">
+
+    <param name="~rate" value="1" />
+
+  </node>
+</launch>

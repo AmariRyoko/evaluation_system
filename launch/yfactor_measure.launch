@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="evaluation_system" name="yfactor_measure" type="yfactor_measure.py" required="true" output="screen">
+
+    <param name="~rate" value="0.001" />
+
+  </node>
+</launch>
