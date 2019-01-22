@@ -96,15 +96,38 @@ class yfactor(object):
             time.sleep(0.01)
         np.savetxt("yfactor_cold_{0}_{1}.txt".format(self.ut,save_name), np.array(da_all), delimiter=" ")
 
+    def iv_ave(self):
+        hot_iv = np.loadtxt("yfactor_hot_{0}_{1}.txt".format(self.ut,save_name))
+        cold_iv = np.loadtxt("yfactor_cold_{0}_{1}.txt".format(self.ut,save_name))
+        da_all = []
+        count = len(open(hot_iv).readlines())
+
+        for i in range(count):
+            da = []
+            vol_ave_ch1 = (hot_iv[0] + cold_iv[0])/2
+            cur_ave_ch1 = (hot_iv[1] + cold_iv[1])/2
+            vol_ave_ch2 = (hot_iv[3] + cold_iv[3])/2
+            cur_ave_ch2 = (hot_iv[4] + cold_iv[4])/2
+            da.append(vol_ave_ch1)
+            da.append(cur_ave_ch1)
+            da.append(hot_iv[2])
+            da.append(cold_iv[2])
+            da.append(vol_ave_ch2)
+            da.append(cur_ave_ch2)
+            da.append(hot_iv[5])
+            da.append(cold_iv[5])
+            da_all.append(da)
+
+        np.savetxt("yfactor_iv_ave_{0}_{1}.txt".format(self.ut,save_name), np.array(da_all), delimiter=" ")
+
     def pv_iv_plot(self):
-        hot = np.loadtxt("yfactor_hot_{0}_{1}.txt".format(self.ut,save_name))
-        cold = np.loadtxt("yfactor_cold_{0}_{1}.txt".format(self.ut,save_name))
+        iv_ave = np.loadtxt("yfantor_iv_ave_{0}_{1}.txt".format(self.ut,save_name))
 
         fig ,(ax1, ax3) = plt.subplots(ncols=2, figsize=(12,4))
         ax2 = ax1.twinx()
-        ax1.plot(hot[:,0], hot[:,1],linestyle='solid', color="green" ,label='I-V')
-        ax2.plot(hot[:,0], hot[:,2],linestyle='solid', color="red", label='HOT')
-        ax2.plot(cold[:,0], cold[:,2],linestyle='solid', color="blue", label='COLD')
+        ax1.plot(iv_ave[:,0], iv_ave[:,1],linestyle='solid', color="green" ,label='I-V')
+        ax2.plot(iv_ave[:,0], iv_ave[:,2],linestyle='solid', color="red", label='HOT')
+        ax2.plot(iv_ave[:,0], cold[:,3],linestyle='solid', color="blue", label='COLD')
         ax1.set_title("yfactor_Hot_Cold_measurement_ch1")
         ax1.set_xlabel("voltage[mV]")
         ax1.set_ylabel("current[uA]")
@@ -112,9 +135,9 @@ class yfactor(object):
         ax2.legend(loc='upper right')
 
         ax4 = ax3.twinx()
-        ax3.plot(hot[:,3], hot[:,4],linestyle='solid', color="green" ,label='I-V')
-        ax4.plot(hot[:,3], hot[:,5],linestyle='solid', color="red", label='HOT')
-        ax4.plot(cold[:,3], cold[:,5],linestyle='solid', color="blue", label='COLD')
+        ax3.plot(iv_ave[:,4], iv_ave[:,5],linestyle='solid', color="green" ,label='I-V')
+        ax4.plot(iv_ave[:,4], iv_ave[:,6],linestyle='solid', color="red", label='HOT')
+        ax4.plot(iv_ave[:,4], iv_ave[:,7],linestyle='solid', color="blue", label='COLD')
         ax3.set_title("yfactor_Hot_Cold_measurement_ch2")
         ax3.set_xlabel("voltage[mV]")
         ax3.set_ylabel("current[uA]")
