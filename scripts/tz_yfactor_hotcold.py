@@ -21,9 +21,28 @@ class yfactor(object):
         self.pub_vol_ch2 = rospy.Publisher("sis_vol_cmd_ch2", Float64, queue_size=1)
         self.pub_vol_ch3 = rospy.Publisher("sis_vol_cmd_ch3", Float64, queue_size=1)
         self.pub_vol_ch4 = rospy.Publisher("sis_vol_cmd_ch4", Float64, queue_size=1)
+        self.pub_vol_start = rospy.Publisher("topic_pub_vol_start", Float64, queue_size=1)
+        self.pub_vol_stop = rospy.Publisher("topic_pub_vol_stop", Float64, queue_size=1)
+        self.pub_val_start = rospy.Publisher("topic_pub_val_start", Float64, queue_size=1)
+        self.pub_val_stop = rospy.Publisher("topic_pub_val_stop", Float64, queue_size=1)
 
         self.t = datetime.datetime.now()
         self.ut = self.t.strftime("%Y%m%d-%H%M%S")
+
+    def set_pm(self):
+        msg = Float64()
+
+        msg.data = -5
+        self.pub_vol_start.publish(msg)
+
+        msg.data = 5
+        self.pub_vol_stop.publish(msg)
+
+        msg.data = -60
+        self.pub_val_start.publish(msg)
+
+        msg.data = 0
+        self.pub_val_stop.publish(msg)
 
     def measure_hot(self, initv, interval, repeat):
         da_all = []
@@ -118,6 +137,8 @@ if __name__ == "__main__" :
     interval = float(input("interval_voltage = ? [mV]"))
     save_name = str(input("save_name="))
     repeat = int((lastv-initv)/interval)
+
+    yf.set_pm()
 
     input("Are you ready HOT measurement?\n Press enter")
     print("Measuring HOT")
