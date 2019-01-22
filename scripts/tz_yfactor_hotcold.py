@@ -100,34 +100,37 @@ class yfactor(object):
         hot_iv = np.loadtxt("yfactor_hot_{0}_{1}.txt".format(self.ut,save_name))
         cold_iv = np.loadtxt("yfactor_cold_{0}_{1}.txt".format(self.ut,save_name))
         da_all = []
-        count = len(open(hot_iv).readlines())
+
+        with open("yfactor_hot_{0}_{1}.txt".format(self.ut,save_name), "r") as f:
+            lines = f.readlines()
+            count = len(lines)
 
         for i in range(count):
             da = []
-            vol_ave_ch1 = (hot_iv[0] + cold_iv[0])/2
-            cur_ave_ch1 = (hot_iv[1] + cold_iv[1])/2
-            vol_ave_ch2 = (hot_iv[3] + cold_iv[3])/2
-            cur_ave_ch2 = (hot_iv[4] + cold_iv[4])/2
+            vol_ave_ch1 = (hot_iv[i][0] + cold_iv[i][0])/2
+            cur_ave_ch1 = (hot_iv[i][1] + cold_iv[i][1])/2
+            vol_ave_ch2 = (hot_iv[i][3] + cold_iv[i][3])/2
+            cur_ave_ch2 = (hot_iv[i][4] + cold_iv[i][4])/2
             da.append(vol_ave_ch1)
             da.append(cur_ave_ch1)
-            da.append(hot_iv[2])
-            da.append(cold_iv[2])
+            da.append(hot_iv[i][2])
+            da.append(cold_iv[i][2])
             da.append(vol_ave_ch2)
             da.append(cur_ave_ch2)
-            da.append(hot_iv[5])
-            da.append(cold_iv[5])
+            da.append(hot_iv[i][5])
+            da.append(cold_iv[i][5])
             da_all.append(da)
 
         np.savetxt("yfactor_iv_ave_{0}_{1}.txt".format(self.ut,save_name), np.array(da_all), delimiter=" ")
 
     def pv_iv_plot(self):
-        iv_ave = np.loadtxt("yfantor_iv_ave_{0}_{1}.txt".format(self.ut,save_name))
+        iv_ave = np.loadtxt("yfactor_iv_ave_{0}_{1}.txt".format(self.ut,save_name))
 
         fig ,(ax1, ax3) = plt.subplots(ncols=2, figsize=(12,4))
         ax2 = ax1.twinx()
         ax1.plot(iv_ave[:,0], iv_ave[:,1],linestyle='solid', color="green" ,label='I-V')
         ax2.plot(iv_ave[:,0], iv_ave[:,2],linestyle='solid', color="red", label='HOT')
-        ax2.plot(iv_ave[:,0], cold[:,3],linestyle='solid', color="blue", label='COLD')
+        ax2.plot(iv_ave[:,0], iv_ave[:,3],linestyle='solid', color="blue", label='COLD')
         ax1.set_title("yfactor_Hot_Cold_measurement_ch1")
         ax1.set_xlabel("voltage[mV]")
         ax1.set_ylabel("current[uA]")
