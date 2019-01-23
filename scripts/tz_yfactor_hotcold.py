@@ -174,6 +174,8 @@ if __name__ == "__main__" :
     print("Measuring COLD")
     yf.measure_cold(initv,interval,repeat)
 
+    yf.iv_ave()
+
     sys.exit(yf.pv_iv_plot())
 
 #20181204
